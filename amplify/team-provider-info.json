@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-aurohealth-dev-162821-authRole",
+      "UnauthRoleArn": "arn:aws:iam::744751167241:role/amplify-aurohealth-dev-162821-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::744751167241:role/amplify-aurohealth-dev-162821-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-aurohealth-dev-162821-deployment",
+      "UnauthRoleName": "amplify-aurohealth-dev-162821-unauthRole",
+      "StackName": "amplify-aurohealth-dev-162821",
+      "StackId": "arn:aws:cloudformation:ap-south-1:744751167241:stack/amplify-aurohealth-dev-162821/d134b3c0-ad90-11eb-9d2f-024c7fd71e10",
+      "AmplifyAppId": "d22lgnmv5qqsyj"
+    },
+    "categories": {
+      "auth": {
+        "aurohealthc58f4d17": {}
+      }
+    }
+  }
+}

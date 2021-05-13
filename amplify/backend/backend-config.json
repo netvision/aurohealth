@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "aurohealthc58f4d17": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
