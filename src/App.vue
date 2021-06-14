@@ -1,9 +1,5 @@
 <template>
-  <amplify-authenticator>
     <router-view />
-    <!-- The rest of your app code -->
-    <amplify-sign-out></amplify-sign-out>
-  </amplify-authenticator>
 </template>
 
 <script>
@@ -13,6 +9,11 @@ export default {
   components: {
     
   },
+  data(){
+    return {
+      visibleLeft: false
+    }
+  }
   
   
 }
