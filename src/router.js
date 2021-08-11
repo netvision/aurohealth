@@ -4,6 +4,8 @@ import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
 import Login from '@/views/Login.vue';
 import Ayurved from '@/views/Ayurved.vue';
+import EditHerb from '@/views/EditHerb.vue';
+import HerbPhotos from '@/views/HerbPhotos.vue';
 
 const routes = [
 	{
@@ -22,6 +24,18 @@ const routes = [
 		path: '/ayurved',
 		name: 'Ayurved',
 		component: Ayurved,
+		beforeEnter: checkAuth
+	},
+	{
+		path: '/edit-herb',
+		name: 'EditHerb',
+		component: EditHerb,
+		beforeEnter: checkAuth
+	},
+	{
+		path: '/herb-photos',
+		name: 'HerbPhotos',
+		component: HerbPhotos,
 		beforeEnter: checkAuth
 	},
 	{

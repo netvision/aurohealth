@@ -1,11 +1,11 @@
 <template>
     <Toolbar>
     <template #left v-if="user">
-        <Button label="New" icon="pi pi-plus" class="p-mr-2" />
+        <h2 class="p-text-bold">Integral Health Care System</h2>
     </template>
 
     <template #right>
-        <h2 class="p-text-bold">Integral Health Care System</h2><Button @click="logout" label="Logout" icon="pi pi-sign-out" class="p-mr-2" />
+        <Button @click="logout" :label="user.username" icon="pi pi-sign-out" class="p-mr-2" />
     </template>
     </Toolbar>
 </template>

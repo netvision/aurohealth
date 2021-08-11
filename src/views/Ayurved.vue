@@ -1,212 +1,117 @@
 <template>
-    <header>
-        <h1>Ayurved</h1>
-    </header>
-    <div class="p-grid p-mx-auto">
-      <div class="p-col-12 p-md-4">
-          <Listbox :options="herbs" optionLabel="name" :filter="true">
-            <template #option="slotProps">
-                <div class="p-d-flex p-jc-between">
-                    <div>{{slotProps.option.name}}</div>
-                    <div class="p-buttonset">
-                        <Button icon="pi pi-user-edit" @click="handleChange(slotProps.option)" class="p-button-text" />
-                        <Button icon="pi pi-images" class="p-button-text" @click="addImages(slotProps.option, $event)" />
-                    </div>
-                </div>
-            </template>
-          </Listbox>
+  <Mainmenu />
+  <Breadcrumb :home="home" :model="pages" />
+  <div v-if="herbs">
+    <h2 class="p-text-left">जड़ी-बूटियाँ ({{herbs._meta.totalCount}}) <Button icon="pi pi-pencil" label="Add New" class="p-button-sm p-button-outlined" @click="$router.push({ name: 'EditHerb'})" /></h2>
+    <div class="p-grid p-nogutter">
+    <div style="padding: .5em" class="p-col-12 p-md-4" v-for="item in herbs.items" :key="item.id">
+      <Card>
+          <template #header>
+            <div v-if="item.images">
+              <Carousel :value="item.images" :numVisible="1" :numScroll="1" :circular="true" :autoplayInterval="3000">
+                <template #item="slotProps">
+                  <img :src="slotProps.data" />
+                </template>
+              </Carousel>
+              
+            </div>
+          </template>
+          <template #title>
+              {{item.name}}
+          </template>
+          <template #content>
+            
+              {{item.common_names}}
+          </template>
+          <template #footer>
+            <p style="width:auto; ">
+              <Button icon="pi pi-images" label="Add Photo" class="p-button-sm p-button-outlined" @click="$router.push({ name: 'HerbPhotos', query: { herb_id: item.id }})" />
+              <Button icon="pi pi-pencil" label="Edit" class="p-button-sm p-button-outlined" style="margin-left: .5em" @click="$router.push({ name: 'EditHerb', query: { herb_id: item.id }})" />
+            </p>
+          </template>
+        </Card>
       </div>
-      <div class="p-col-12 p-md-8 p-shadow-1 p-text-left"> 
-          <div class="p-fluid p-formgrid p-grid">
-            <div class="p-field p-col-12 p-md-4">
-                <label for="firstname">नाम / Name</label>
-                <InputText id="firstname" type="text" v-model="herb.name" />
-            </div>
-            <div class="p-field p-col-12 p-md-8">
-                <label for="lastname">अन्य प्रचलित नाम / Common Names</label>
-                <InputText id="lastname" type="text" v-model="herb.common_names" />
-            </div>
-            <div class="p-field p-col-12">
-                
-                <label for="address">विवरण / Description</label>
-                <Editor v-model="herb.description" editorStyle="height: 320px">
-                    <template #toolbar>
-                        <span class="ql-formats">
-                            <button class="ql-header" value="1" type="button"></button>
-                            <button class="ql-header" value="2" type="button"></button>
-                            <button class="ql-bold"></button>
-                            <button class="ql-italic"></button>
-                            <button class="ql-underline"></button>
-                            <button class="ql-list" value="ordered" type="button"></button>
-                            <button class="ql-list" value="bullet" type="button"></button>
-                        </span>
-                    </template>
-                </Editor>
-            </div>
-            <div class="p-field p-col-10">
-                <label for="city">उपयोग / Uses</label>
-                <MultiSelect v-model="herb.symptoms" :options="symptoms" optionLabel="description" display="chip" placeholder="Select symptom" />
-            </div>
-            <div class="p-field p-col-2">
-                <label>&nbsp;</label>
-                <Button label="New" icon="pi pi-plus" iconPos="left" @click="symptomModal" />
-            </div>
-            <div class="p-field p-col-12">
-                <label for="links">अन्य स्रोत / References</label>
-                <InputText id="links" type="text" v-model="herb.links" />
-            </div>
-            <div class="p-field p-col-12 p-md-3">
-                <label>&nbsp;</label>
-                <Button label="Submit" @click="handleSubmit" />
-            </div>
-            <OverlayPanel ref="op" :showCloseIcon="true" :dismissable="true">
-                <InputText v-model="symptom.description" id="sym" type="text" @keyup.enter="addSymptom" />
-            </OverlayPanel>
-            <OverlayPanel ref="images" :showCloseIcon="true" :dismissable="true">
-                <FileUpload name="demo[]" :customUpload="true" @uploader="uploadFile" />
-            </OverlayPanel>
-        </div>
-    
-                
       </div>
-      
+  <Paginator :rows="herbs._meta.perPage" :totalRecords="herbs._meta.totalCount" @page="onPage($event)"></Paginator>
   </div>
-  
-
 </template>
 
 <script>
 import axios from 'axios'
-import InputText from 'primevue/inputtext';
-import Editor from 'primevue/editor';
-import Listbox from 'primevue/listbox';
-import MultiSelect from 'primevue/multiselect';
-import Button from 'primevue/button';
-import OverlayPanel from 'primevue/overlaypanel';
-import FileUpload from 'primevue/fileupload';
 import { Storage } from 'aws-amplify';
+import Mainmenu from '@/components/Mainmenu.vue'
+import Breadcrumb from 'primevue/breadcrumb'
+import Paginator from 'primevue/paginator';
+import Carousel from 'primevue/carousel';
+import Card from 'primevue/card';
+import Button from 'primevue/button';
 export default {
-    name: 'Ayurved',
-    components:{
-        Listbox, InputText, Button, Editor, MultiSelect, OverlayPanel, FileUpload
+  components:{
+      Mainmenu, Card, Button, Paginator, Breadcrumb, Carousel
     },
-    data(){
-        return{
-            herb:{},
-            herbs: [],
-            herbImages:'',
-            symptoms: [],
-            symptom:{},
-            imgFolder:''
-        }
-    },
-    methods:{
-        handleChange(herb) {
-            this.herb = herb
-            this.herb.symptoms = []
-            herb.herbSymptoms.forEach(hs =>{
-                let symptom = this.symptoms.filter(ss =>ss.id === hs.symptom_id)
-                this.herb.symptoms.push(symptom[0])
-            })
-            console.log(this.herb)
-        },
 
-        async uploadFile(e){
-            const file = e.files[0]
-            try{
-                await Storage.put(this.imgFolder+file.name, file, {
-                    contentType: 'image/*'
-                })
-                this.$refs.images.hide()
-            }
-            catch (e){
-                console.log(e)
-            }
-        },
-
-        async handleSubmit(){
-            let use = []
-                this.herb.symptoms.forEach(e => {
-                    use.push(e.description)
-                });
-                this.herb.uses = use.join(', ')
-            if(!this.herb.id){
-                try{
-                    //console.log(JSON.stringify(this.herb))
-                    const res = await axios.post('https://api.resurgentindia.org/ayurvedic-herbs', this.herb)
-                    this.upHerbSymptom(this.herb.symptoms, res.data.id)
-                }
-                catch(e){
-                    console.log(e)
-                }
-            }
-            else{
-                this.delSymptom(this.herb.id)
-                try{
-                    //console.log(JSON.stringify(this.herb))
-                    const res = await axios.put('https://api.resurgentindia.org/ayurvedic-herbs/'+this.herb.id, this.herb)
-                    this.upHerbSymptom(this.herb.symptoms, res.data.id)
-                }
-                catch(e){
-                    console.log(e)
-                }
-            }
-        },
-        delSymptom(id){
-            axios.get('https://api.resurgentindia.org/herb-symptoms/del?id='+id).then(res =>{
-                console.log(res.data);
-            })
-        },
-        upHerbSymptom(symptoms, id){
-          symptoms.forEach(sm => {
-              axios.post('https://api.resurgentindia.org/herb-symptoms', {herb_id: id, symptom_id: sm.id}) 
-              .then(res =>{
-                  console.log(res.data)
-              })
-          })  
-        },
-
-        symptomModal(e){
-             this.$refs.op.toggle(e);
-        },
-
-        addImages(data, e){
-           this.imgFolder = 'herb-images/'+data.id+'/'
-            this.$refs.images.show(e)
-        },
-
-        async addSymptom(){
-            try{
-                let data = await axios.post('https://api.resurgentindia.org/symptoms', this.symptom)
-                this.symptoms.push(data.data)
-                if(this.herb.symptoms && this.herb.symptoms.length > 0) this.herb.symptoms.push(data.data);
-                else {
-                    this.herb.symptoms = [];
-                    this.herb.symptoms.push(data.data)
-                }
-                this.symptom = {}
-            }
-            catch(e){
-                console.log(e)
-            }
-            this.$refs.op.hide()
-        }
-    },
-    async mounted(){
-        let data  = await axios.get('https://api.resurgentindia.org/ayurvedic-herbs?expand=herbSymptoms')
-        this.herbs = data.data
-        let sym = await axios.get('https://api.resurgentindia.org/symptoms')
-        this.symptoms = sym.data
-        let image = await Storage.get('homeopathy-Banner.jpg', {
-            level: 'public'
-        })
-        this.herbImages = image
-        
-        
+  data(){
+    return{
+      herbs: null,
+      home: {icon: 'pi pi-home', to: '/'},
+      pages: [
+        {label: 'Ayurved', url: '/ayurved'},
+        {label: 'Herbs', url: '/ayurved'}
+      ]
     }
+  },
+
+  methods:{
+      async getHerbs(page = null){
+          let p = (page) ? page : 1
+          const data = await axios.get('https://api.resurgentindia.org/ayurvedic-herbs?per-page=12&sort=name&page='+p)
+          this.herbs = data.data
+          
+          this.herbs.items.map(herb =>{
+            if(herb.photos){
+              herb.images = []
+              let keys = herb.photos.split(', ')
+              keys.forEach(async(key) => {
+                const src = await Storage.get(key)
+                herb.images.push(src)
+              })
+              return herb.images
+            }
+          })
+          
+         console.log(this.herbs.items)
+         
+      },
+
+    onPage(e){
+      this.getHerbs(e.page+1)
+    },
+
+    
+
+  },
+
+  created(){
+      this.getHerbs()
+  }
 }
 </script>
 
 <style>
+.p-card{
+  height: 100%;
+  position: relative;
+  padding-bottom:4rem
+}
 
+.p-card-footer{
+  position: absolute;
+  bottom:1rem
+}
+.p-carousel-items-content{
+  height: inherit;
+}
+.p-carousel-items-content img{
+  height: 10rem;
+}
 </style>

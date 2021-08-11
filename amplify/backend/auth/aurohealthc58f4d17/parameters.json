@@ -1,6 +1,6 @@
 {
     "identityPoolName": "aurohealthc58f4d17_identitypool_c58f4d17",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "aurohec58f4d17",
     "userPoolName": "aurohealthc58f4d17_userpool_c58f4d17",
     "autoVerifiedAttributes": [

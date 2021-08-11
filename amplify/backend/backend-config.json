@@ -12,5 +12,6 @@
       "service": "S3",
       "providerPlugin": "awscloudformation"
     }
-  }
+  },
+  "hosting": {}
 }

@@ -1,6 +1,6 @@
 <template>
 <Mainmenu />
-  <h1 v-on:click="logOut">Home {{group[0]}}</h1>
+  <h1 class="p-text-capitalize">{{group[0]}} Home </h1>
   <div class="p-d-flex p-flex-wrap p-jc-center">
     <card @click='$router.push({ name: "Ayurved" })' class="p-mr-2 p-mb-2" style="max-width:200px">
       <template #header>
@@ -21,24 +21,7 @@
       </template>
       
     </card>
-    <card @click='$router.push({ name: "Ayurved" })' class="p-mr-2 p-mb-2" style="max-width:200px">
-      <template #header>
-        <img alt="user header" :src="ayurvedCover">
-      </template>
-      <template #title>
-        <router-link to="/ayurved">Accupressure</router-link>
-      </template>
-      
-    </card>
-    <card @click='$router.push({ name: "Ayurved" })' class="p-mr-2 p-mb-2" style="max-width:200px">
-      <template #header>
-        <img alt="user header" :src="ayurvedCover">
-      </template>
-      <template #title>
-        <router-link to="/ayurved">Physiotharapy</router-link>
-      </template>
-      
-    </card>
+    
   </div>
 </template>
 
